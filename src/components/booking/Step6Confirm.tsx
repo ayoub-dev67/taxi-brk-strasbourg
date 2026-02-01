@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { CheckCircle, MapPin, Calendar, Users, Phone, MessageCircle, Home } from "lucide-react";
+import { CheckCircle, MapPin, Calendar, Users, Phone, MessageCircle, Home, Send } from "lucide-react";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import type { ReservationData } from "@/types";
@@ -12,11 +12,42 @@ interface Step6ConfirmProps {
 }
 
 export function Step6Confirm({ data }: Step6ConfirmProps) {
+  // Formater la date pour le message WhatsApp
+  const dateFormatted = data.date
+    ? format(data.date, "EEEE d MMMM yyyy", { locale: fr })
+    : "Non spécifiée";
+
+  // Construire le message WhatsApp pré-rempli
+  const messageWhatsApp = `🚖 NOUVELLE RÉSERVATION TAXI BRK
+
+📅 Date : ${dateFormatted} à ${data.heure || "Non spécifiée"}
+📍 Départ : ${data.depart?.adresse || "Non spécifié"}
+📍 Arrivée : ${data.arrivee?.adresse || "Non spécifié"}
+${data.distance ? `📏 Distance : ${data.distance} km` : ""}
+${data.prixEstime ? `💰 Prix estimé : ${data.prixEstime.toFixed(2)}€` : ""}
+🔄 Type : ${data.typeTrajet === "aller-retour" ? "Aller-retour" : "Aller simple"}
+
+👤 Client : ${data.client?.prenom || ""} ${data.client?.nom || ""}
+📞 Tél : ${data.client?.telephone || "Non spécifié"}
+📧 Email : ${data.client?.email || "Non spécifié"}
+
+📝 Passagers : ${data.passagers || 1}
+🧳 Bagages : ${data.bagages || 0}
+${data.animaux ? `🐕 Animaux : ${data.animaux}` : ""}
+${data.options?.siegeBebe ? "👶 Siège bébé demandé" : ""}
+${data.options?.fauteuilRoulant ? "♿ Fauteuil roulant" : ""}
+${data.client?.commentaire ? `\n💬 Commentaire : ${data.client.commentaire}` : ""}
+
+Réservation via taxi-brk-strasbourg.vercel.app`.trim();
+
+  const numeroTaxi = "33744220960";
+  const lienWhatsApp = `https://wa.me/${numeroTaxi}?text=${encodeURIComponent(messageWhatsApp)}`;
+
   return (
     <div className="text-center space-y-8">
       {/* Success Icon */}
       <div className="flex justify-center">
-        <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center animate-pulse">
           <CheckCircle className="w-12 h-12 text-green-500" />
         </div>
       </div>
@@ -30,6 +61,25 @@ export function Step6Confirm({ data }: Step6ConfirmProps) {
           Votre demande de réservation a été transmise avec succès.
           <br />
           <span className="text-gold-400 font-medium">Nous vous appelons dans les 5 minutes</span> pour confirmer votre course.
+        </p>
+      </div>
+
+      {/* Bouton WhatsApp principal */}
+      <div className="space-y-3">
+        <p className="text-gray-300 text-sm">
+          📱 Envoyez votre réservation directement au chauffeur via WhatsApp
+        </p>
+        <a
+          href={lienWhatsApp}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-3 w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-semibold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <Send className="w-6 h-6" />
+          Envoyer la réservation sur WhatsApp
+        </a>
+        <p className="text-gray-500 text-xs">
+          Cela ouvrira WhatsApp avec un message pré-rempli
         </p>
       </div>
 
@@ -69,12 +119,22 @@ export function Step6Confirm({ data }: Step6ConfirmProps) {
             <p className="text-white">{data.passagers} personne(s)</p>
           </div>
         </div>
+
+        {/* Prix estimé */}
+        {data.prixEstime && (
+          <div className="pt-3 mt-3 border-t border-gold-400/20">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Prix estimé</span>
+              <span className="text-gold-400 text-xl font-bold">≈ {data.prixEstime.toFixed(2)}€</span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Contact */}
+      {/* Contact alternatif */}
       <div className="space-y-3">
-        <p className="text-gray-400">
-          Une question ? Contactez-nous directement :
+        <p className="text-gray-400 text-sm">
+          Vous préférez appeler ?
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
@@ -88,10 +148,10 @@ export function Step6Confirm({ data }: Step6ConfirmProps) {
             href={`https://wa.me/${siteConfig.contact.whatsapp}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-gold inline-flex items-center justify-center gap-2"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366]/10 transition-all"
           >
             <MessageCircle className="w-5 h-5" />
-            WhatsApp
+            WhatsApp simple
           </a>
         </div>
       </div>
