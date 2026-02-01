@@ -68,9 +68,15 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/images/logo.svg",
-    shortcut: "/images/logo.svg",
-    apple: "/images/logo.svg",
+    icon: [
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icons/icon-192x192.svg", sizes: "180x180", type: "image/svg+xml" },
+    ],
+    other: [
+      { rel: "mask-icon", url: "/icons/icon.svg", color: "#D4AF37" },
+    ],
   },
   manifest: "/manifest.webmanifest",
 };

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4E4BC"/>
+      <stop offset="50%" style="stop-color:#D4AF37"/>
+      <stop offset="100%" style="stop-color:#B8960C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="192" height="192" rx="24" fill="#0A0A0A"/>
+
+  <!-- Border -->
+  <rect x="4" y="4" width="184" height="184" rx="20" fill="none" stroke="url(#goldGrad)" stroke-width="4"/>
+
+  <!-- Inner ring -->
+  <rect x="16" y="16" width="160" height="160" rx="12" fill="none" stroke="url(#goldGrad)" stroke-width="1" opacity="0.3"/>
+
+  <!-- T letter -->
+  <text x="50" y="130"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="90"
+        font-weight="700"
+        fill="url(#goldGrad)">T</text>
+
+  <!-- B letter -->
+  <text x="100" y="140"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="65"
+        font-weight="700"
+        fill="#FFFFFF">B</text>
+</svg>
