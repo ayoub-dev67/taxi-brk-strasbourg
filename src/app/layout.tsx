@@ -38,23 +38,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR",
     url: siteConfig.url,
-    title: `${siteConfig.name} | Taxi Conventionné CPAM Strasbourg`,
-    description: siteConfig.description,
+    title: "TAXI BRK - Taxi Conventionné Strasbourg",
+    description: "Votre taxi premium à Strasbourg. Transport médical VSL conventionné CPAM, transfert aéroport, disponible 24h/24. Appelez le 07 68 14 94 61",
     siteName: siteConfig.name,
-    images: [
-      {
-        url: siteConfig.images.ogImage,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.name,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} | Taxi Conventionné CPAM Strasbourg`,
-    description: siteConfig.description,
-    images: [siteConfig.images.ogImage],
+    title: "TAXI BRK - Taxi Conventionné Strasbourg",
+    description: "Votre taxi premium à Strasbourg. Appelez le 07 68 14 94 61",
   },
   robots: {
     index: true,
