@@ -13,22 +13,50 @@ interface Step3OptionsProps {
 }
 
 export function Step3Options({ data, updateData, onNext, onPrev }: Step3OptionsProps) {
+  // Valeurs actuelles avec fallback robuste
+  const passagers = typeof data.passagers === "number" ? data.passagers : 1;
+  const bagages = typeof data.bagages === "number" ? data.bagages : 0;
+  const animaux = typeof data.animaux === "number" ? data.animaux : 0;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onNext();
   };
 
-  const incrementValue = (field: "passagers" | "bagages" | "animaux", max: number) => {
-    const current = data[field] || 0;
-    if (current < max) {
-      updateData({ [field]: current + 1 });
+  // Handlers directs et explicites pour les compteurs
+  const incrementPassagers = () => {
+    if (passagers < 7) {
+      updateData({ passagers: passagers + 1 });
     }
   };
 
-  const decrementValue = (field: "passagers" | "bagages" | "animaux", min: number) => {
-    const current = data[field] || 0;
-    if (current > min) {
-      updateData({ [field]: current - 1 });
+  const decrementPassagers = () => {
+    if (passagers > 1) {
+      updateData({ passagers: passagers - 1 });
+    }
+  };
+
+  const incrementBagages = () => {
+    if (bagages < 10) {
+      updateData({ bagages: bagages + 1 });
+    }
+  };
+
+  const decrementBagages = () => {
+    if (bagages > 0) {
+      updateData({ bagages: bagages - 1 });
+    }
+  };
+
+  const incrementAnimaux = () => {
+    if (animaux < 3) {
+      updateData({ animaux: animaux + 1 });
+    }
+  };
+
+  const decrementAnimaux = () => {
+    if (animaux > 0) {
+      updateData({ animaux: animaux - 1 });
     }
   };
 
@@ -101,136 +129,142 @@ export function Step3Options({ data, updateData, onNext, onPrev }: Step3OptionsP
         </p>
       </div>
 
-      {/* Counters */}
+      {/* Counters - Boutons 48px pour mobile */}
       <div className="space-y-4">
         {/* Passagers */}
-        <div className="card-premium flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gold-400/10 flex items-center justify-center">
+        <div className="card-premium flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gold-400/10 flex items-center justify-center shrink-0">
               <Users className="w-5 h-5 text-gold-400" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-white font-medium">Passagers</p>
-              <p className="text-gray-500 text-sm">Nombre de personnes</p>
+              <p className="text-gray-500 text-sm truncate">1-7 personnes</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <button
               type="button"
-              onClick={() => decrementValue("passagers", 1)}
+              onClick={decrementPassagers}
+              disabled={passagers <= 1}
               className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center transition-all",
-                data.passagers === 1
-                  ? "bg-black-100 text-gray-600"
-                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20"
+                "w-12 h-12 rounded-lg flex items-center justify-center transition-all touch-manipulation",
+                passagers <= 1
+                  ? "bg-black-100 text-gray-600 cursor-not-allowed"
+                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20 active:bg-gold-400/30"
               )}
-              disabled={data.passagers === 1}
               aria-label="Réduire le nombre de passagers"
-              title="Réduire"
             >
-              <Minus className="w-4 h-4" aria-hidden="true" />
+              <Minus className="w-5 h-5" />
             </button>
-            <span className="text-white font-semibold text-lg w-8 text-center" aria-live="polite">
-              {data.passagers || 1}
+            <span className="text-white font-bold text-xl w-8 text-center tabular-nums">
+              {passagers}
             </span>
             <button
               type="button"
-              onClick={() => incrementValue("passagers", 8)}
+              onClick={incrementPassagers}
+              disabled={passagers >= 7}
               className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center transition-all",
-                data.passagers === 8
-                  ? "bg-black-100 text-gray-600"
-                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20"
+                "w-12 h-12 rounded-lg flex items-center justify-center transition-all touch-manipulation",
+                passagers >= 7
+                  ? "bg-black-100 text-gray-600 cursor-not-allowed"
+                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20 active:bg-gold-400/30"
               )}
-              disabled={data.passagers === 8}
               aria-label="Augmenter le nombre de passagers"
-              title="Augmenter"
             >
-              <Plus className="w-4 h-4" aria-hidden="true" />
+              <Plus className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* Bagages */}
-        <div className="card-premium flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gold-400/10 flex items-center justify-center">
+        <div className="card-premium flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gold-400/10 flex items-center justify-center shrink-0">
               <Briefcase className="w-5 h-5 text-gold-400" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-white font-medium">Bagages</p>
-              <p className="text-gray-500 text-sm">Valises volumineuses</p>
+              <p className="text-gray-500 text-sm truncate">Valises volumineuses</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <button
               type="button"
-              onClick={() => decrementValue("bagages", 0)}
+              onClick={decrementBagages}
+              disabled={bagages <= 0}
               className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center transition-all",
-                data.bagages === 0
-                  ? "bg-black-100 text-gray-600"
-                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20"
+                "w-12 h-12 rounded-lg flex items-center justify-center transition-all touch-manipulation",
+                bagages <= 0
+                  ? "bg-black-100 text-gray-600 cursor-not-allowed"
+                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20 active:bg-gold-400/30"
               )}
-              disabled={data.bagages === 0}
               aria-label="Réduire le nombre de bagages"
-              title="Réduire"
             >
-              <Minus className="w-4 h-4" aria-hidden="true" />
+              <Minus className="w-5 h-5" />
             </button>
-            <span className="text-white font-semibold text-lg w-8 text-center" aria-live="polite">
-              {data.bagages || 0}
+            <span className="text-white font-bold text-xl w-8 text-center tabular-nums">
+              {bagages}
             </span>
             <button
               type="button"
-              onClick={() => incrementValue("bagages", 10)}
-              className="w-10 h-10 rounded-lg bg-gold-400/10 text-gold-400 hover:bg-gold-400/20 flex items-center justify-center transition-all"
+              onClick={incrementBagages}
+              disabled={bagages >= 10}
+              className={cn(
+                "w-12 h-12 rounded-lg flex items-center justify-center transition-all touch-manipulation",
+                bagages >= 10
+                  ? "bg-black-100 text-gray-600 cursor-not-allowed"
+                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20 active:bg-gold-400/30"
+              )}
               aria-label="Augmenter le nombre de bagages"
-              title="Augmenter"
             >
-              <Plus className="w-4 h-4" aria-hidden="true" />
+              <Plus className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* Animaux */}
-        <div className="card-premium flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gold-400/10 flex items-center justify-center">
+        <div className="card-premium flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gold-400/10 flex items-center justify-center shrink-0">
               <Dog className="w-5 h-5 text-gold-400" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-white font-medium">Animaux</p>
-              <p className="text-gray-500 text-sm">Animaux de compagnie</p>
+              <p className="text-gray-500 text-sm truncate">+2€ par animal</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <button
               type="button"
-              onClick={() => decrementValue("animaux", 0)}
+              onClick={decrementAnimaux}
+              disabled={animaux <= 0}
               className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center transition-all",
-                data.animaux === 0
-                  ? "bg-black-100 text-gray-600"
-                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20"
+                "w-12 h-12 rounded-lg flex items-center justify-center transition-all touch-manipulation",
+                animaux <= 0
+                  ? "bg-black-100 text-gray-600 cursor-not-allowed"
+                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20 active:bg-gold-400/30"
               )}
-              disabled={data.animaux === 0}
               aria-label="Réduire le nombre d'animaux"
-              title="Réduire"
             >
-              <Minus className="w-4 h-4" aria-hidden="true" />
+              <Minus className="w-5 h-5" />
             </button>
-            <span className="text-white font-semibold text-lg w-8 text-center" aria-live="polite">
-              {data.animaux || 0}
+            <span className="text-white font-bold text-xl w-8 text-center tabular-nums">
+              {animaux}
             </span>
             <button
               type="button"
-              onClick={() => incrementValue("animaux", 3)}
-              className="w-10 h-10 rounded-lg bg-gold-400/10 text-gold-400 hover:bg-gold-400/20 flex items-center justify-center transition-all"
+              onClick={incrementAnimaux}
+              disabled={animaux >= 3}
+              className={cn(
+                "w-12 h-12 rounded-lg flex items-center justify-center transition-all touch-manipulation",
+                animaux >= 3
+                  ? "bg-black-100 text-gray-600 cursor-not-allowed"
+                  : "bg-gold-400/10 text-gold-400 hover:bg-gold-400/20 active:bg-gold-400/30"
+              )}
               aria-label="Augmenter le nombre d'animaux"
-              title="Augmenter"
             >
-              <Plus className="w-4 h-4" aria-hidden="true" />
+              <Plus className="w-5 h-5" />
             </button>
           </div>
         </div>
