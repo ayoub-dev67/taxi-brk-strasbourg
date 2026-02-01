@@ -1,13 +1,32 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { CreditCard, MapPin, Calendar, Users, Briefcase, Dog, ArrowRight, ArrowLeft, ArrowLeftRight, Info, AlertTriangle, Map } from "lucide-react";
-import { formatPrix } from "@/lib/price-calculator";
+import { CreditCard, MapPin, Calendar, Users, Briefcase, Dog, ArrowRight, ArrowLeft, ArrowLeftRight, Info, Map, Clock } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { RouteMap } from "@/components/maps";
 import type { ReservationData } from "@/types";
+
+// Tarifs Préfecture du Bas-Rhin (67)
+const TARIFS = {
+  priseEnCharge: 3.02,
+  minimum: 8.00,
+  tarifA: { prixKm: 1.00, description: "Jour, aller-retour" },
+  tarifB: { prixKm: 1.42, description: "Nuit/dimanche/férié, aller-retour" },
+  tarifC: { prixKm: 2.00, description: "Jour, aller simple" },
+  tarifD: { prixKm: 2.84, description: "Nuit/dimanche/férié, aller simple" },
+  supplements: {
+    bagage: 2.00,
+    animal: 2.00,
+    passagerSupp: 4.00, // à partir du 5ème
+  },
+};
+
+// Jours fériés 2024-2026 (Alsace inclut le 26 décembre)
+const JOURS_FERIES = [
+  "01-01", "04-01", "05-01", "05-08", "05-09", "05-20", "07-14", "08-15", "11-01", "11-11", "12-25", "12-26",
+];
 
 interface Step4PriceProps {
   data: Partial<ReservationData>;
@@ -16,170 +35,228 @@ interface Step4PriceProps {
   onPrev: () => void;
 }
 
-interface PriceEstimate {
-  min: number;
-  max: number;
-  distance: number;
-  duration: string;
-  isEstimated: boolean;
+/**
+ * Calcule la distance à vol d'oiseau (Haversine) × 1.3 pour estimer la route
+ */
+function calculerDistanceKm(lat1?: number, lng1?: number, lat2?: number, lng2?: number): number {
+  if (!lat1 || !lng1 || !lat2 || !lng2) return 10; // Distance par défaut
+
+  const R = 6371; // Rayon de la Terre en km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distanceVolOiseau = R * c;
+
+  // Multiplier par 1.3 pour estimer la distance route
+  return Math.round(distanceVolOiseau * 1.3 * 10) / 10;
+}
+
+/**
+ * Estime la durée du trajet (~2 min/km en ville, ~1 min/km sur route)
+ */
+function estimerDuree(distanceKm: number): string {
+  const facteur = distanceKm > 30 ? 1.2 : 2;
+  const minutes = Math.round(distanceKm * facteur);
+  if (minutes < 60) return `~${minutes} min`;
+  const heures = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return mins > 0 ? `~${heures}h ${mins}min` : `~${heures}h`;
+}
+
+/**
+ * Détermine si c'est un tarif de nuit
+ */
+function estTarifNuit(dateHeure: Date): boolean {
+  const heure = dateHeure.getHours();
+  const jour = dateHeure.getDay();
+  const dateStr = format(dateHeure, "MM-dd");
+
+  // Nuit: 19h-7h
+  if (heure >= 19 || heure < 7) return true;
+
+  // Dimanche
+  if (jour === 0) return true;
+
+  // Jour férié
+  if (JOURS_FERIES.includes(dateStr)) return true;
+
+  return false;
+}
+
+/**
+ * Calcule le prix d'une course
+ */
+function calculerPrix(
+  distanceKm: number,
+  dateHeure: Date,
+  typeTrajet: "aller-simple" | "aller-retour",
+  passagers: number,
+  bagages: number,
+  animaux: number
+): { total: number; tarif: string; tarifDescription: string; details: string[] } {
+  const isNuit = estTarifNuit(dateHeure);
+  const isAllerSimple = typeTrajet === "aller-simple";
+
+  // Déterminer le tarif
+  let tarif: string;
+  let prixKm: number;
+  let tarifDescription: string;
+
+  if (isAllerSimple) {
+    if (isNuit) {
+      tarif = "D";
+      prixKm = TARIFS.tarifD.prixKm;
+      tarifDescription = TARIFS.tarifD.description;
+    } else {
+      tarif = "C";
+      prixKm = TARIFS.tarifC.prixKm;
+      tarifDescription = TARIFS.tarifC.description;
+    }
+  } else {
+    if (isNuit) {
+      tarif = "B";
+      prixKm = TARIFS.tarifB.prixKm;
+      tarifDescription = TARIFS.tarifB.description;
+    } else {
+      tarif = "A";
+      prixKm = TARIFS.tarifA.prixKm;
+      tarifDescription = TARIFS.tarifA.description;
+    }
+  }
+
+  const details: string[] = [];
+
+  // Prise en charge
+  let total = TARIFS.priseEnCharge;
+  details.push(`Prise en charge: ${TARIFS.priseEnCharge.toFixed(2)}€`);
+
+  // Distance
+  const montantDistance = distanceKm * prixKm;
+  total += montantDistance;
+  details.push(`${distanceKm} km × ${prixKm.toFixed(2)}€ = ${montantDistance.toFixed(2)}€`);
+
+  // Suppléments bagages
+  if (bagages > 0) {
+    const suppBagages = bagages * TARIFS.supplements.bagage;
+    total += suppBagages;
+    details.push(`${bagages} bagage(s): +${suppBagages.toFixed(2)}€`);
+  }
+
+  // Suppléments animaux
+  if (animaux > 0) {
+    const suppAnimaux = animaux * TARIFS.supplements.animal;
+    total += suppAnimaux;
+    details.push(`${animaux} animal(aux): +${suppAnimaux.toFixed(2)}€`);
+  }
+
+  // Passagers supplémentaires (à partir du 5ème)
+  if (passagers >= 5) {
+    const passagersSupp = passagers - 4;
+    const suppPassagers = passagersSupp * TARIFS.supplements.passagerSupp;
+    total += suppPassagers;
+    details.push(`${passagersSupp} passager(s) supp.: +${suppPassagers.toFixed(2)}€`);
+  }
+
+  // Minimum
+  if (total < TARIFS.minimum) {
+    total = TARIFS.minimum;
+    details.push(`Minimum appliqué: ${TARIFS.minimum.toFixed(2)}€`);
+  }
+
+  return { total: Math.round(total * 100) / 100, tarif, tarifDescription, details };
+}
+
+function formatPrix(prix: number): string {
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(prix);
 }
 
 export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps) {
-  const [priceEstimate, setPriceEstimate] = useState<PriceEstimate | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(false);
   const { trackPriceCalculated } = useAnalytics();
   const hasTrackedPrice = useRef(false);
 
-  const calculatePrice = useCallback(async () => {
-    if (!data.depart?.adresse || !data.arrivee?.adresse) {
-      setError("Adresses manquantes");
-      setIsLoading(false);
-      return;
+  // Calcul instantané côté client
+  const priceEstimate = useMemo(() => {
+    // Calculer la distance
+    const distance = calculerDistanceKm(
+      data.depart?.lat,
+      data.depart?.lng,
+      data.arrivee?.lat,
+      data.arrivee?.lng
+    );
+
+    // Construire la date/heure
+    let dateHeure = new Date();
+    if (data.date) {
+      dateHeure = new Date(data.date);
+      if (data.heure) {
+        const [heures, minutes] = data.heure.split(":").map(Number);
+        dateHeure.setHours(heures, minutes, 0, 0);
+      }
     }
 
-    setIsLoading(true);
-    setError(null);
+    // Calculer le prix jour (tarif normal)
+    const prixJour = calculerPrix(
+      distance,
+      dateHeure,
+      data.typeTrajet || "aller-simple",
+      data.passagers || 1,
+      data.bagages || 0,
+      data.animaux || 0
+    );
 
-    try {
-      // Étape 1: Calculer la distance via l'API route
-      // Envoie les coordonnées si disponibles pour un calcul plus précis
-      const routeResponse = await fetch("/api/calculate-route", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          origin: data.depart.adresse,
-          destination: data.arrivee.adresse,
-          originLat: data.depart.lat,
-          originLng: data.depart.lng,
-          destinationLat: data.arrivee.lat,
-          destinationLng: data.arrivee.lng,
-        }),
-      });
+    // Calculer le prix nuit (pour la fourchette)
+    const dateNuit = new Date(dateHeure);
+    dateNuit.setHours(22, 0, 0, 0);
+    const prixNuit = calculerPrix(
+      distance,
+      dateNuit,
+      data.typeTrajet || "aller-simple",
+      data.passagers || 1,
+      data.bagages || 0,
+      data.animaux || 0
+    );
 
-      const routeData = await routeResponse.json();
+    // Durée estimée
+    const duree = estimerDuree(distance);
 
-      if (!routeData.success) {
-        throw new Error(routeData.error || "Erreur lors du calcul de l'itinéraire");
-      }
+    // Vérifier si les coordonnées sont disponibles
+    const hasCoords = !!(data.depart?.lat && data.depart?.lng && data.arrivee?.lat && data.arrivee?.lng);
 
-      const { distance, duration, durationText } = routeData.data;
-      const isEstimated = routeData.estimated || false;
+    return {
+      distance,
+      duree,
+      prixMin: prixJour.total,
+      prixMax: prixNuit.total,
+      tarif: prixJour.tarif,
+      tarifDescription: prixJour.tarifDescription,
+      details: prixJour.details,
+      isEstimated: !hasCoords,
+    };
+  }, [data.depart?.lat, data.depart?.lng, data.arrivee?.lat, data.arrivee?.lng, data.date, data.heure, data.typeTrajet, data.passagers, data.bagages, data.animaux]);
 
-      // Étape 2: Calculer le prix via l'API price
-      // Construire la date/heure complète
-      let dateHeure = new Date();
-      if (data.date) {
-        dateHeure = new Date(data.date);
-        if (data.heure) {
-          const [heures, minutes] = data.heure.split(":").map(Number);
-          dateHeure.setHours(heures, minutes, 0, 0);
-        }
-      }
-
-      // Déterminer si retour à vide selon le type de trajet
-      // Aller simple = le taxi rentre sans passager = retour à vide
-      // Aller-retour = le taxi a un passager au retour = retour en charge
-      const isRetourVide = data.typeTrajet === "aller-simple";
-
-      // Calculer le prix avec le tarif correct (jour)
-      const priceResponse = await fetch("/api/calculate-price", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          distanceKm: distance,
-          dateHeure: dateHeure.toISOString(),
-          passagers: data.passagers || 1,
-          bagages: data.bagages || 0,
-          animaux: data.animaux || 0,
-          retourVide: isRetourVide,
-        }),
-      });
-
-      const priceData = await priceResponse.json();
-
-      if (!priceData.success) {
-        throw new Error(priceData.error || "Erreur lors du calcul du prix");
-      }
-
-      // Calculer le prix max (même type de trajet, mais tarif nuit pour la fourchette)
-      // On simule le tarif nuit en créant une date à 22h
-      const dateNuit = new Date(dateHeure);
-      dateNuit.setHours(22, 0, 0, 0);
-
-      const priceNuitResponse = await fetch("/api/calculate-price", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          distanceKm: distance,
-          dateHeure: dateNuit.toISOString(),
-          passagers: data.passagers || 1,
-          bagages: data.bagages || 0,
-          animaux: data.animaux || 0,
-          retourVide: isRetourVide,
-        }),
-      });
-
-      const priceNuitData = await priceNuitResponse.json();
-
-      // Le prix min est le tarif jour, le prix max est le tarif nuit (pour le même type de trajet)
-      const priceMin = priceData.data.total;
-      const priceMax = priceNuitData.success ? priceNuitData.data.total : priceMin * 1.42;
-
-      setPriceEstimate({
-        min: priceMin,
-        max: priceMax,
-        distance: distance,
-        duration: durationText || `${duration} min`,
-        isEstimated,
-      });
-
-      // Track price calculation
-      if (!hasTrackedPrice.current) {
-        trackPriceCalculated({
-          price: Math.round((priceMin + priceMax) / 2),
-          distance: `${distance} km`,
-          duration: durationText || `${duration} min`,
-        });
-        hasTrackedPrice.current = true;
-      }
-
-      // Mettre à jour les données
-      updateData({
-        distance: distance,
-        prixEstime: (priceMin + priceMax) / 2,
-      });
-
-    } catch (err) {
-      console.error("Erreur calcul prix:", err);
-      setError(err instanceof Error ? err.message : "Erreur lors du calcul");
-
-      // Fallback: estimation basique
-      const fallbackDistance = 10;
-      const fallbackMin = 8 + fallbackDistance * 1.00;
-      const fallbackMax = 8 + fallbackDistance * 2.00;
-
-      setPriceEstimate({
-        min: fallbackMin,
-        max: fallbackMax,
-        distance: fallbackDistance,
-        duration: "25 min",
-        isEstimated: true,
-      });
-
-      updateData({
-        distance: fallbackDistance,
-        prixEstime: (fallbackMin + fallbackMax) / 2,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [data.depart?.adresse, data.depart?.lat, data.depart?.lng, data.arrivee?.adresse, data.arrivee?.lat, data.arrivee?.lng, data.date, data.heure, data.passagers, data.bagages, data.animaux, data.typeTrajet, updateData, trackPriceCalculated]);
-
+  // Mettre à jour les données et tracker
   useEffect(() => {
-    calculatePrice();
-  }, [calculatePrice]);
+    updateData({
+      distance: priceEstimate.distance,
+      prixEstime: (priceEstimate.prixMin + priceEstimate.prixMax) / 2,
+    });
+
+    if (!hasTrackedPrice.current) {
+      trackPriceCalculated({
+        price: Math.round((priceEstimate.prixMin + priceEstimate.prixMax) / 2),
+        distance: `${priceEstimate.distance} km`,
+        duration: priceEstimate.duree,
+      });
+      hasTrackedPrice.current = true;
+    }
+  }, [priceEstimate, updateData, trackPriceCalculated]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -188,10 +265,10 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
 
   // Préparer les coordonnées pour la carte
   const originCoords = data.depart?.lat && data.depart?.lng
-    ? { adresse: data.depart.adresse, lat: data.depart.lat, lng: data.depart.lng }
+    ? { adresse: data.depart.adresse || "", lat: data.depart.lat, lng: data.depart.lng }
     : undefined;
   const destinationCoords = data.arrivee?.lat && data.arrivee?.lng
-    ? { adresse: data.arrivee.adresse, lat: data.arrivee.lat, lng: data.arrivee.lng }
+    ? { adresse: data.arrivee.adresse || "", lat: data.arrivee.lat, lng: data.arrivee.lng }
     : undefined;
 
   return (
@@ -237,7 +314,7 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
             <p className="text-white">
               {data.typeTrajet === "aller-retour" ? "Aller-retour" : "Aller simple"}
               <span className="text-gray-500 text-sm ml-2">
-                (Tarif {data.typeTrajet === "aller-retour" ? "A/B" : "C/D"})
+                (Tarif {priceEstimate.tarif} - {priceEstimate.tarifDescription})
               </span>
             </p>
           </div>
@@ -291,55 +368,63 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
         )}
       </div>
 
-      {/* Erreur */}
-      {error && (
-        <div className="flex items-start gap-2 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-          <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" />
-          <p className="text-yellow-500 text-sm">
-            {error} - Estimation approximative affichée.
-          </p>
-        </div>
-      )}
-
       {/* Prix estimé */}
       <div className="card-premium bg-gradient-to-br from-gold-400/10 to-transparent border-gold-400/40">
         <div className="flex items-center gap-3 mb-4">
           <CreditCard className="w-5 h-5 text-gold-400" />
           <p className="text-white font-medium">Estimation du prix</p>
-          {priceEstimate?.isEstimated && (
+          {priceEstimate.isEstimated && (
             <span className="text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-500 rounded-full">
               Estimé
             </span>
           )}
         </div>
 
-        {isLoading ? (
-          <div className="animate-pulse space-y-2">
-            <div className="h-10 bg-gold-400/10 rounded-lg w-1/2" />
-            <div className="h-4 bg-gold-400/10 rounded w-3/4" />
-          </div>
-        ) : priceEstimate ? (
-          <>
-            <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-3xl font-bold text-gold-400">
-                {formatPrix(priceEstimate.min)}
-              </span>
+        {/* Prix principal */}
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="text-4xl font-bold text-gold-400">
+            {formatPrix(priceEstimate.prixMin)}
+          </span>
+          {priceEstimate.prixMin !== priceEstimate.prixMax && (
+            <>
               <span className="text-gray-400">à</span>
-              <span className="text-3xl font-bold text-gold-400">
-                {formatPrix(priceEstimate.max)}
+              <span className="text-4xl font-bold text-gold-400">
+                {formatPrix(priceEstimate.prixMax)}
               </span>
-            </div>
-            <p className="text-gray-400 text-sm">
-              Distance : {priceEstimate.distance} km • Durée : {priceEstimate.duration}
-            </p>
-          </>
-        ) : null}
+            </>
+          )}
+        </div>
 
-        <div className="mt-4 flex items-start gap-2 p-3 bg-black/30 rounded-lg">
+        {/* Distance et durée */}
+        <div className="flex items-center gap-4 text-gray-400 text-sm mb-4">
+          <div className="flex items-center gap-1">
+            <MapPin className="w-4 h-4" />
+            <span>{priceEstimate.distance} km</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Clock className="w-4 h-4" />
+            <span>{priceEstimate.duree}</span>
+          </div>
+        </div>
+
+        {/* Détails du calcul */}
+        <div className="bg-black/30 rounded-lg p-3 mb-4">
+          <p className="text-gray-500 text-xs mb-2">Détail du calcul (Tarif {priceEstimate.tarif}):</p>
+          <ul className="space-y-1">
+            {priceEstimate.details.map((detail, index) => (
+              <li key={index} className="text-gray-400 text-xs flex items-center gap-2">
+                <span className="w-1 h-1 rounded-full bg-gold-400" />
+                {detail}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="flex items-start gap-2 p-3 bg-black/30 rounded-lg">
           <Info className="w-4 h-4 text-gold-400 mt-0.5 flex-shrink-0" />
           <p className="text-gray-400 text-xs">
             Le prix final sera calculé au compteur selon les tarifs officiels de la Préfecture du Bas-Rhin.
-            Les fourchettes ci-dessus sont indicatives.
+            Les fourchettes ci-dessus sont indicatives (jour/nuit).
           </p>
         </div>
 
@@ -347,15 +432,15 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
           <div className="flex items-center gap-2 text-gray-300 text-sm">
             <span className="text-lg">💳</span>
-            <span>Paiement à bord - CB acceptée</span>
+            <span>CB acceptée</span>
           </div>
           <div className="flex items-center gap-2 text-gray-300 text-sm">
             <span className="text-lg">🔒</span>
-            <span>Aucun prépaiement requis</span>
+            <span>Aucun prépaiement</span>
           </div>
           <div className="flex items-center gap-2 text-gray-300 text-sm">
             <span className="text-lg">❌</span>
-            <span>Annulation gratuite 2h avant</span>
+            <span>Annulation gratuite</span>
           </div>
         </div>
       </div>
