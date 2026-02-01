@@ -24,10 +24,10 @@ export interface ReservationData {
   passagers: number;
   bagages: number;
   animaux: number;
+  typeTrajet: "aller-simple" | "aller-retour"; // Aller simple = retour à vide, Aller-retour = retour en charge
   options: {
     siegeBebe: boolean;
     fauteuilRoulant: boolean;
-    retourVide: boolean;
   };
 
   // Étape 4: Prix (calculé)

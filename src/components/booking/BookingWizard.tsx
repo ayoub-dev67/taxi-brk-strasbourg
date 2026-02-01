@@ -20,10 +20,10 @@ const initialData: Partial<ReservationData> = {
   passagers: 1,
   bagages: 0,
   animaux: 0,
+  typeTrajet: "aller-simple", // Par défaut aller simple (le plus fréquent)
   options: {
     siegeBebe: false,
     fauteuilRoulant: false,
-    retourVide: false,
   },
   client: {
     nom: "",

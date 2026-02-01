@@ -1,8 +1,7 @@
 "use client";
 
-import { Users, Briefcase, Dog, Baby, Accessibility, ArrowRight, ArrowLeft, Minus, Plus } from "lucide-react";
+import { Users, Briefcase, Dog, Baby, Accessibility, ArrowRight, ArrowLeft, Minus, Plus, ArrowLeftRight, ArrowRightLeft } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { ReservationData } from "@/types";
 
@@ -50,6 +49,55 @@ export function Step3Options({ data, updateData, onNext, onPrev }: Step3OptionsP
         </h2>
         <p className="text-gray-400">
           Adaptez votre course selon vos besoins
+        </p>
+      </div>
+
+      {/* Type de trajet */}
+      <div className="space-y-3">
+        <p className="text-white font-medium flex items-center gap-2">
+          <ArrowRightLeft className="w-4 h-4 text-gold-400" />
+          Type de trajet
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => updateData({ typeTrajet: "aller-simple" })}
+            className={cn(
+              "p-4 rounded-lg border transition-all text-left",
+              data.typeTrajet === "aller-simple"
+                ? "bg-gold-400/10 border-gold-400 ring-2 ring-gold-400/20"
+                : "bg-black-100 border-gold-400/20 hover:border-gold-400/50"
+            )}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <ArrowRight className="w-5 h-5 text-gold-400" />
+              <span className="text-white font-medium">Aller simple</span>
+            </div>
+            <p className="text-gray-500 text-xs">
+              Tarif C/D - Le taxi rentre sans passager
+            </p>
+          </button>
+          <button
+            type="button"
+            onClick={() => updateData({ typeTrajet: "aller-retour" })}
+            className={cn(
+              "p-4 rounded-lg border transition-all text-left",
+              data.typeTrajet === "aller-retour"
+                ? "bg-gold-400/10 border-gold-400 ring-2 ring-gold-400/20"
+                : "bg-black-100 border-gold-400/20 hover:border-gold-400/50"
+            )}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <ArrowLeftRight className="w-5 h-5 text-gold-400" />
+              <span className="text-white font-medium">Aller-retour</span>
+            </div>
+            <p className="text-gray-500 text-xs">
+              Tarif A/B - Le taxi vous attend ou vous ramène
+            </p>
+          </button>
+        </div>
+        <p className="text-gray-500 text-xs">
+          💡 L&apos;aller-retour est plus économique car le taxi a un passager au retour.
         </p>
       </div>
 

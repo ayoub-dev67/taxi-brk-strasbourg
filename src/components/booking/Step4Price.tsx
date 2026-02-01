@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { CreditCard, MapPin, Calendar, Users, Briefcase, Dog, ArrowRight, ArrowLeft, Info, AlertTriangle, Map } from "lucide-react";
+import { CreditCard, MapPin, Calendar, Users, Briefcase, Dog, ArrowRight, ArrowLeft, ArrowLeftRight, Info, AlertTriangle, Map } from "lucide-react";
 import { formatPrix } from "@/lib/price-calculator";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { RouteMap } from "@/components/maps";
@@ -78,6 +78,12 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
         }
       }
 
+      // Déterminer si retour à vide selon le type de trajet
+      // Aller simple = le taxi rentre sans passager = retour à vide
+      // Aller-retour = le taxi a un passager au retour = retour en charge
+      const isRetourVide = data.typeTrajet === "aller-simple";
+
+      // Calculer le prix avec le tarif correct (jour)
       const priceResponse = await fetch("/api/calculate-price", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -87,7 +93,7 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
           passagers: data.passagers || 1,
           bagages: data.bagages || 0,
           animaux: data.animaux || 0,
-          retourVide: false,
+          retourVide: isRetourVide,
         }),
       });
 
@@ -97,24 +103,29 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
         throw new Error(priceData.error || "Erreur lors du calcul du prix");
       }
 
-      // Calculer le prix max (tarif nuit)
-      const priceMaxResponse = await fetch("/api/calculate-price", {
+      // Calculer le prix max (même type de trajet, mais tarif nuit pour la fourchette)
+      // On simule le tarif nuit en créant une date à 22h
+      const dateNuit = new Date(dateHeure);
+      dateNuit.setHours(22, 0, 0, 0);
+
+      const priceNuitResponse = await fetch("/api/calculate-price", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           distanceKm: distance,
-          dateHeure: dateHeure.toISOString(),
+          dateHeure: dateNuit.toISOString(),
           passagers: data.passagers || 1,
           bagages: data.bagages || 0,
           animaux: data.animaux || 0,
-          retourVide: true, // Tarif plus élevé pour estimation max
+          retourVide: isRetourVide,
         }),
       });
 
-      const priceMaxData = await priceMaxResponse.json();
+      const priceNuitData = await priceNuitResponse.json();
 
+      // Le prix min est le tarif jour, le prix max est le tarif nuit (pour le même type de trajet)
       const priceMin = priceData.data.total;
-      const priceMax = priceMaxData.success ? priceMaxData.data.total : priceMin * 1.5;
+      const priceMax = priceNuitData.success ? priceNuitData.data.total : priceMin * 1.42;
 
       setPriceEstimate({
         min: priceMin,
@@ -164,7 +175,7 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
     } finally {
       setIsLoading(false);
     }
-  }, [data.depart?.adresse, data.depart?.lat, data.depart?.lng, data.arrivee?.adresse, data.arrivee?.lat, data.arrivee?.lng, data.date, data.heure, data.passagers, data.bagages, data.animaux, updateData, trackPriceCalculated]);
+  }, [data.depart?.adresse, data.depart?.lat, data.depart?.lng, data.arrivee?.adresse, data.arrivee?.lat, data.arrivee?.lng, data.date, data.heure, data.passagers, data.bagages, data.animaux, data.typeTrajet, updateData, trackPriceCalculated]);
 
   useEffect(() => {
     calculatePrice();
@@ -214,6 +225,20 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
             <p className="text-gray-400 text-sm">Date et heure</p>
             <p className="text-white">
               {data.date && format(data.date, "EEEE d MMMM yyyy", { locale: fr })} à {data.heure}
+            </p>
+          </div>
+        </div>
+
+        {/* Type de trajet */}
+        <div className="flex items-center gap-3">
+          <ArrowLeftRight className="w-5 h-5 text-gold-400" />
+          <div>
+            <p className="text-gray-400 text-sm">Type de trajet</p>
+            <p className="text-white">
+              {data.typeTrajet === "aller-retour" ? "Aller-retour" : "Aller simple"}
+              <span className="text-gray-500 text-sm ml-2">
+                (Tarif {data.typeTrajet === "aller-retour" ? "A/B" : "C/D"})
+              </span>
             </p>
           </div>
         </div>
