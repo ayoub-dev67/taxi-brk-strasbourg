@@ -44,12 +44,17 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
 
     try {
       // Étape 1: Calculer la distance via l'API route
+      // Envoie les coordonnées si disponibles pour un calcul plus précis
       const routeResponse = await fetch("/api/calculate-route", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           origin: data.depart.adresse,
           destination: data.arrivee.adresse,
+          originLat: data.depart.lat,
+          originLng: data.depart.lng,
+          destinationLat: data.arrivee.lat,
+          destinationLng: data.arrivee.lng,
         }),
       });
 
@@ -159,7 +164,7 @@ export function Step4Price({ data, updateData, onNext, onPrev }: Step4PriceProps
     } finally {
       setIsLoading(false);
     }
-  }, [data.depart?.adresse, data.arrivee?.adresse, data.date, data.heure, data.passagers, data.bagages, data.animaux, updateData, trackPriceCalculated]);
+  }, [data.depart?.adresse, data.depart?.lat, data.depart?.lng, data.arrivee?.adresse, data.arrivee?.lat, data.arrivee?.lng, data.date, data.heure, data.passagers, data.bagages, data.animaux, updateData, trackPriceCalculated]);
 
   useEffect(() => {
     calculatePrice();
