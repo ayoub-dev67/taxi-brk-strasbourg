@@ -56,10 +56,10 @@ export default function ReservationPage() {
                   Appelez-nous pour une réservation immédiate
                 </p>
                 <a
-                  href="tel:+33744220960"
+                  href="tel:+33768149461"
                   className="btn-gold w-full flex items-center justify-center gap-2"
                 >
-                  📞 07 44 22 09 60
+                  📞 07 68 14 94 61
                 </a>
               </div>
             </div>

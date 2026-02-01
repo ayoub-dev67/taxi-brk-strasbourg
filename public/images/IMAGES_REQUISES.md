@@ -52,7 +52,7 @@
 - Logo "TAXI BRK" centré avec effet glow
 - Tagline: "Votre taxi premium à Strasbourg"
 - 3 badges: CONVENTIONNÉ CPAM | DISPONIBLE 24H/24 | SERVICE PREMIUM
-- Numéro de téléphone: 07 44 22 09 60
+- Numéro de téléphone: 07 68 14 94 61
 - Cadre décoratif doré aux coins
 - Pattern de points dorés subtil
 

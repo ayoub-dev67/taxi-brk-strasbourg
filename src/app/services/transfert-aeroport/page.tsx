@@ -93,7 +93,7 @@ const faqs = [
   {
     question: "Comment réserver un taxi pour l'aéroport ?",
     answer:
-      "Vous pouvez réserver par téléphone au 07 44 22 09 60, via WhatsApp, ou sur notre site web. Indiquez votre numéro de vol pour que nous puissions le suivre et adapter notre arrivée en cas de retard.",
+      "Vous pouvez réserver par téléphone au 07 68 14 94 61, via WhatsApp, ou sur notre site web. Indiquez votre numéro de vol pour que nous puissions le suivre et adapter notre arrivée en cas de retard.",
   },
   {
     question: "Que se passe-t-il si mon vol est en retard ?",

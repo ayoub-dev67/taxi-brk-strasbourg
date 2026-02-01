@@ -193,7 +193,7 @@ export const faqSchema = {
       name: "Comment puis-je réserver un taxi à Strasbourg ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Vous pouvez réserver par téléphone au 07 44 22 09 60, via WhatsApp, ou directement sur notre site web via le formulaire de réservation. Réponse garantie sous 5 minutes.",
+        text: "Vous pouvez réserver par téléphone au 07 68 14 94 61, via WhatsApp, ou directement sur notre site web via le formulaire de réservation. Réponse garantie sous 5 minutes.",
       },
     },
     {

@@ -98,7 +98,7 @@ ${data.client.commentaire ? `\n📝 Commentaire: ${data.client.commentaire}` : "
         await client.messages.create({
           body: messageWhatsApp,
           from: "whatsapp:+14155238886",
-          to: "whatsapp:+33744220960",
+          to: "whatsapp:+33768149461",
         } as TwilioMessage);
 
         results.whatsapp.sent = true;
@@ -383,8 +383,8 @@ function generateClientEmailTemplate(data: EmailData): string {
               <p style="color: #888888; margin: 0 0 15px; font-size: 14px;">
                 Une question ? Appelez-nous :
               </p>
-              <a href="tel:+33744220960" style="display: inline-block; background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%); color: #000000; text-decoration: none; font-size: 20px; font-weight: bold; padding: 15px 40px; border-radius: 8px;">
-                📞 07 44 22 09 60
+              <a href="tel:+33768149461" style="display: inline-block; background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%); color: #000000; text-decoration: none; font-size: 20px; font-weight: bold; padding: 15px 40px; border-radius: 8px;">
+                📞 07 68 14 94 61
               </a>
             </td>
           </tr>

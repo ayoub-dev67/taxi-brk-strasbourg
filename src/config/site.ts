@@ -8,11 +8,11 @@ export const siteConfig = {
 
   // Coordonnées
   contact: {
-    phone: "07 44 22 09 60",
-    phoneLink: "+33744220960",
+    phone: "07 68 14 94 61",
+    phoneLink: "+33768149461",
     email: "taxibrk@icloud.com",
-    whatsapp: "+33744220960",
-    whatsappLink: "https://wa.me/33744220960",
+    whatsapp: "33768149461",
+    whatsappLink: "https://wa.me/33768149461",
   },
 
   // Localisation
