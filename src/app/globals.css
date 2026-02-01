@@ -307,7 +307,7 @@
 
   .card-premium::before {
     content: '';
-    @apply absolute inset-0 rounded-xl;
+    @apply absolute inset-0 rounded-xl pointer-events-none;
     background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
     opacity: 0;
     transition: opacity 0.3s ease;
