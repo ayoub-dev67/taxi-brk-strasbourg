@@ -69,7 +69,7 @@ interface RouteMapProps {
 }
 
 function RouteMapComponent({ origin, destination, className }: RouteMapProps) {
-  const { isLoaded, loadError } = useGoogleMaps();
+  const { isLoaded, loadError, apiKeyMissing } = useGoogleMaps();
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [mapRef, setMapRef] = useState<google.maps.Map | null>(null);
@@ -126,7 +126,7 @@ function RouteMapComponent({ origin, destination, className }: RouteMapProps) {
   }, [isLoaded, origin?.adresse, origin?.lat, origin?.lng, destination?.adresse, destination?.lat, destination?.lng, mapRef]);
 
   // Show placeholder if Google Maps is not configured
-  if (!isLoaded) {
+  if (apiKeyMissing) {
     return (
       <div className={className}>
         <GoogleMapsPlaceholder message="La carte sera disponible une fois Google Maps configuré" />
@@ -138,7 +138,19 @@ function RouteMapComponent({ origin, destination, className }: RouteMapProps) {
   if (loadError) {
     return (
       <div className={className}>
-        <GoogleMapsPlaceholder message="Erreur de chargement de la carte" />
+        <GoogleMapsPlaceholder
+          showError
+          errorMessage="Impossible de charger Google Maps"
+        />
+      </div>
+    );
+  }
+
+  // Show loader while Google Maps is loading
+  if (!isLoaded) {
+    return (
+      <div className={className}>
+        <GoogleMapsLoader />
       </div>
     );
   }

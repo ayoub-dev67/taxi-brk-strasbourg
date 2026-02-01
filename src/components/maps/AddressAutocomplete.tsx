@@ -34,7 +34,7 @@ export function AddressAutocomplete({
   error,
   showGeolocation = false,
 }: AddressAutocompleteProps) {
-  const { isLoaded } = useGoogleMaps();
+  const { isLoaded, loadError, apiKeyMissing } = useGoogleMaps();
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [inputValue, setInputValue] = useState(value);
@@ -144,8 +144,13 @@ export function AddressAutocomplete({
 
   const iconColorClass = iconColor === "green" ? "text-green-400" : "text-gold-400";
 
-  // If Google Maps is not loaded, render a simple input
-  if (!isLoaded) {
+  // Log l'erreur en développement
+  if (loadError && process.env.NODE_ENV === "development") {
+    console.warn("AddressAutocomplete: Google Maps failed to load:", loadError.message);
+  }
+
+  // If Google Maps is not loaded or failed to load, render a simple input
+  if (!isLoaded || loadError || apiKeyMissing) {
     return (
       <div className="space-y-2">
         <label htmlFor={id} className="text-white flex items-center gap-2 text-sm font-medium">
