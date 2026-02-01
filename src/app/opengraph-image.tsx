@@ -243,7 +243,7 @@ export default async function Image() {
             letterSpacing: 4,
           }}
         >
-          07 68 14 94 61
+          07 44 22 09 60
         </div>
       </div>
     ),

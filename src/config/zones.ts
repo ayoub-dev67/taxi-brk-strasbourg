@@ -21,7 +21,7 @@ export const zones: Zone[] = [
     name: "Strasbourg Centre",
     fullName: "Strasbourg Centre-Ville",
     description: "Votre taxi au cœur de Strasbourg, disponible 24h/24. Prise en charge rapide dans tout le centre historique, la Grande Île et les quais.",
-    metaDescription: "Taxi Strasbourg Centre-Ville. Réservation 24h/24, prise en charge immédiate. Cathédrale, Petite France, Gare. Tarifs officiels. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Strasbourg Centre-Ville. Réservation 24h/24, prise en charge immédiate. Cathédrale, Petite France, Gare. Tarifs officiels. ☎ 07 44 22 09 60",
     distances: {
       centreville: { km: 0, duration: "Sur place" },
       gare: { km: 1, duration: "5 min" },
@@ -40,7 +40,7 @@ export const zones: Zone[] = [
     name: "Neudorf",
     fullName: "Strasbourg Neudorf",
     description: "Service de taxi à Neudorf, le plus grand quartier de Strasbourg. Desserte rapide vers le centre-ville, la gare et l'aéroport.",
-    metaDescription: "Taxi Neudorf Strasbourg. Réservation 24h/24, quartier résidentiel et commercial. Transport médical, courses quotidiennes. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Neudorf Strasbourg. Réservation 24h/24, quartier résidentiel et commercial. Transport médical, courses quotidiennes. ☎ 07 44 22 09 60",
     distances: {
       centreville: { km: 3, duration: "10 min" },
       gare: { km: 4, duration: "12 min" },
@@ -59,7 +59,7 @@ export const zones: Zone[] = [
     name: "Robertsau",
     fullName: "Strasbourg Robertsau",
     description: "Taxi à la Robertsau, quartier résidentiel proche des institutions européennes. Service premium pour le Parlement et le Conseil de l'Europe.",
-    metaDescription: "Taxi Robertsau Strasbourg. Quartier européen, Parlement, Conseil de l'Europe. Service premium 24h/24. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Robertsau Strasbourg. Quartier européen, Parlement, Conseil de l'Europe. Service premium 24h/24. ☎ 07 44 22 09 60",
     distances: {
       centreville: { km: 5, duration: "15 min" },
       gare: { km: 6, duration: "18 min" },
@@ -78,7 +78,7 @@ export const zones: Zone[] = [
     name: "Cronenbourg",
     fullName: "Strasbourg Cronenbourg",
     description: "Service de taxi à Cronenbourg, quartier historique de Strasbourg. Prise en charge rapide vers le centre-ville et toutes destinations.",
-    metaDescription: "Taxi Cronenbourg Strasbourg. Réservation 24h/24, tarifs préfecture. Transport médical, courses quotidiennes. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Cronenbourg Strasbourg. Réservation 24h/24, tarifs préfecture. Transport médical, courses quotidiennes. ☎ 07 44 22 09 60",
     distances: {
       centreville: { km: 4, duration: "12 min" },
       gare: { km: 5, duration: "15 min" },
@@ -97,7 +97,7 @@ export const zones: Zone[] = [
     name: "Hautepierre",
     fullName: "Strasbourg Hautepierre",
     description: "Taxi à Hautepierre, proche du CHU et du centre commercial. Service spécialisé transport médical vers l'hôpital de Hautepierre.",
-    metaDescription: "Taxi Hautepierre Strasbourg. CHU Hautepierre, transport médical conventionné CPAM. Réservation 24h/24. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Hautepierre Strasbourg. CHU Hautepierre, transport médical conventionné CPAM. Réservation 24h/24. ☎ 07 44 22 09 60",
     distances: {
       centreville: { km: 5, duration: "15 min" },
       gare: { km: 6, duration: "18 min" },
@@ -116,7 +116,7 @@ export const zones: Zone[] = [
     name: "Illkirch-Graffenstaden",
     fullName: "Illkirch-Graffenstaden",
     description: "Votre taxi à Illkirch-Graffenstaden, commune au sud de Strasbourg. Desserte du campus universitaire et des zones d'activités.",
-    metaDescription: "Taxi Illkirch-Graffenstaden. Campus universitaire, Pôle API, zone commerciale. Réservation 24h/24. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Illkirch-Graffenstaden. Campus universitaire, Pôle API, zone commerciale. Réservation 24h/24. ☎ 07 44 22 09 60",
     distances: {
       centreville: { km: 7, duration: "15 min" },
       gare: { km: 8, duration: "18 min" },
@@ -135,7 +135,7 @@ export const zones: Zone[] = [
     name: "Schiltigheim",
     fullName: "Schiltigheim",
     description: "Service de taxi à Schiltigheim, la « Cité des Brasseurs ». Prise en charge rapide vers Strasbourg centre et toutes destinations.",
-    metaDescription: "Taxi Schiltigheim. Réservation 24h/24, proche Strasbourg centre. Transport médical, transferts aéroport. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Schiltigheim. Réservation 24h/24, proche Strasbourg centre. Transport médical, transferts aéroport. ☎ 07 44 22 09 60",
     distances: {
       centreville: { km: 3, duration: "10 min" },
       gare: { km: 4, duration: "12 min" },
@@ -154,7 +154,7 @@ export const zones: Zone[] = [
     name: "Lingolsheim",
     fullName: "Lingolsheim",
     description: "Taxi à Lingolsheim, commune résidentielle proche de Strasbourg. Service rapide vers le centre-ville, la gare et l'aéroport.",
-    metaDescription: "Taxi Lingolsheim. Réservation 24h/24, commune résidentielle. Transport vers Strasbourg, gare, aéroport. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Lingolsheim. Réservation 24h/24, commune résidentielle. Transport vers Strasbourg, gare, aéroport. ☎ 07 44 22 09 60",
     distances: {
       centreville: { km: 6, duration: "12 min" },
       gare: { km: 7, duration: "15 min" },

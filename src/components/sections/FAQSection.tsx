@@ -12,12 +12,12 @@ const faqs = [
   {
     question: "Comment réserver un taxi ?",
     answer:
-      "Réserver votre taxi n'a jamais été aussi simple ! Vous avez trois options : appelez-nous directement au 07 68 14 94 61 pour une réponse immédiate, envoyez-nous un message WhatsApp si vous préférez l'écrit, ou utilisez notre formulaire de réservation en ligne disponible 24h/24. Nous confirmons chaque réservation par SMS pour votre tranquillité d'esprit. Pour les transferts aéroport ou rendez-vous médicaux importants, nous vous conseillons de réserver au moins 24h à l'avance pour garantir votre créneau. Réservez maintenant en quelques clics !",
+      "Réserver votre taxi n'a jamais été aussi simple ! Vous avez trois options : appelez-nous directement au 07 44 22 09 60 pour une réponse immédiate, envoyez-nous un message WhatsApp si vous préférez l'écrit, ou utilisez notre formulaire de réservation en ligne disponible 24h/24. Nous confirmons chaque réservation par SMS pour votre tranquillité d'esprit. Pour les transferts aéroport ou rendez-vous médicaux importants, nous vous conseillons de réserver au moins 24h à l'avance pour garantir votre créneau. Réservez maintenant en quelques clics !",
   },
   {
     question: "Êtes-vous conventionné par la CPAM ?",
     answer:
-      "Absolument ! TAXI BRK est officiellement conventionné par la Sécurité Sociale depuis plusieurs années. Cela signifie que vos transports médicaux peuvent être pris en charge à 100% sur présentation d'une prescription médicale de transport (bon de transport). Nous nous occupons de TOUTES les démarches administratives avec votre CPAM : vous n'avez rien à avancer ni aucun papier à remplir. Des milliers de patients strasbourgeois nous font confiance chaque année pour leurs soins. Appelez-nous au 07 68 14 94 61 pour organiser votre prochain transport médical !",
+      "Absolument ! TAXI BRK est officiellement conventionné par la Sécurité Sociale depuis plusieurs années. Cela signifie que vos transports médicaux peuvent être pris en charge à 100% sur présentation d'une prescription médicale de transport (bon de transport). Nous nous occupons de TOUTES les démarches administratives avec votre CPAM : vous n'avez rien à avancer ni aucun papier à remplir. Des milliers de patients strasbourgeois nous font confiance chaque année pour leurs soins. Appelez-nous au 07 44 22 09 60 pour organiser votre prochain transport médical !",
   },
   {
     question: "Quels sont vos tarifs ?",
@@ -32,12 +32,12 @@ const faqs = [
   {
     question: "Pouvez-vous transporter des enfants non accompagnés ?",
     answer:
-      "Bien sûr, et c'est un service que les parents adorent ! Nous transportons vos enfants en toute sécurité vers l'école, les activités extra-scolaires, chez leurs grands-parents ou dans le cadre de la garde alternée. Chaque trajet est confirmé par SMS aux parents au départ ET à l'arrivée. Nous disposons de sièges auto homologués adaptés à tous les âges (de 0 à 10 ans). Notre chauffeur est habitué aux enfants et sait les mettre en confiance. Appelez-nous au 07 68 14 94 61 pour mettre en place un transport régulier pour vos enfants !",
+      "Bien sûr, et c'est un service que les parents adorent ! Nous transportons vos enfants en toute sécurité vers l'école, les activités extra-scolaires, chez leurs grands-parents ou dans le cadre de la garde alternée. Chaque trajet est confirmé par SMS aux parents au départ ET à l'arrivée. Nous disposons de sièges auto homologués adaptés à tous les âges (de 0 à 10 ans). Notre chauffeur est habitué aux enfants et sait les mettre en confiance. Appelez-nous au 07 44 22 09 60 pour mettre en place un transport régulier pour vos enfants !",
   },
   {
     question: "Comment fonctionne le transport médical ?",
     answer:
-      "C'est très simple, on s'occupe de tout ! Il vous suffit d'avoir une prescription médicale de transport (ordonnance) établie par votre médecin. Ensuite, nous prenons en charge l'intégralité des démarches administratives avec la CPAM : vous n'avez absolument rien à payer ni aucun formulaire à remplir. Ce service couvre toutes les situations : consultations spécialisées, hospitalisations, séances de dialyse, radiothérapie, kinésithérapie, etc. Nous accompagnons certains patients depuis plus de 5 ans pour leurs soins réguliers. Contactez-nous dès maintenant au 07 68 14 94 61 pour organiser votre transport médical !",
+      "C'est très simple, on s'occupe de tout ! Il vous suffit d'avoir une prescription médicale de transport (ordonnance) établie par votre médecin. Ensuite, nous prenons en charge l'intégralité des démarches administratives avec la CPAM : vous n'avez absolument rien à payer ni aucun formulaire à remplir. Ce service couvre toutes les situations : consultations spécialisées, hospitalisations, séances de dialyse, radiothérapie, kinésithérapie, etc. Nous accompagnons certains patients depuis plus de 5 ans pour leurs soins réguliers. Contactez-nous dès maintenant au 07 44 22 09 60 pour organiser votre transport médical !",
   },
   {
     question: "Acceptez-vous les animaux ?",

@@ -46,7 +46,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "Appeler",
         short_name: "Appeler",
         description: "Appeler TAXI BRK",
-        url: "tel:+33768149461",
+        url: "tel:+33744220960",
         icons: [{ src: "/icons/icon-192x192.svg", sizes: "96x96" }],
       },
     ],

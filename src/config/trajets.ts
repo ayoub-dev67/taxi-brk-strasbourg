@@ -24,7 +24,7 @@ export const trajets: Trajet[] = [
     duration: "15-20 min",
     priceRange: { min: 25, max: 35 },
     description: "Transfert taxi entre Strasbourg centre et l'aéroport de Strasbourg-Entzheim. Service ponctuel avec suivi de vol.",
-    metaDescription: "Taxi Strasbourg Aéroport Entzheim. Prix fixe dès 25€, trajet 15 min. Suivi de vol, prise en charge 24h/24. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Strasbourg Aéroport Entzheim. Prix fixe dès 25€, trajet 15 min. Suivi de vol, prise en charge 24h/24. ☎ 07 44 22 09 60",
     highlights: [
       "Prix fixe convenu à l'avance",
       "Suivi de votre vol en temps réel",
@@ -44,7 +44,7 @@ export const trajets: Trajet[] = [
     duration: "10-15 min",
     priceRange: { min: 12, max: 20 },
     description: "Transport taxi vers la Gare de Strasbourg depuis tous les quartiers. Idéal pour les TGV, TER et ICE.",
-    metaDescription: "Taxi vers Gare de Strasbourg. Prix dès 12€, trajet rapide. TGV, TER, ICE. Réservation 24h/24. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi vers Gare de Strasbourg. Prix dès 12€, trajet rapide. TGV, TER, ICE. Réservation 24h/24. ☎ 07 44 22 09 60",
     highlights: [
       "Trajet rapide et direct",
       "Connaissance parfaite des accès",
@@ -64,7 +64,7 @@ export const trajets: Trajet[] = [
     duration: "1h15-1h30",
     priceRange: { min: 180, max: 220 },
     description: "Transfert longue distance vers l'EuroAirport Bâle-Mulhouse. Confort optimal pour ce trajet d'1h30.",
-    metaDescription: "Taxi Strasbourg EuroAirport Bâle-Mulhouse. Prix fixe dès 180€, trajet 1h30. Véhicule confortable, réservation 24h/24. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Strasbourg EuroAirport Bâle-Mulhouse. Prix fixe dès 180€, trajet 1h30. Véhicule confortable, réservation 24h/24. ☎ 07 44 22 09 60",
     highlights: [
       "Prix forfaitaire tout compris",
       "Véhicule grand confort",
@@ -84,7 +84,7 @@ export const trajets: Trajet[] = [
     duration: "45-55 min",
     priceRange: { min: 90, max: 120 },
     description: "Transfert taxi vers Europa-Park, le célèbre parc d'attractions allemand. Idéal pour les familles.",
-    metaDescription: "Taxi Strasbourg Europa-Park. Prix dès 90€, trajet 50 min. Siège enfant gratuit, famille bienvenue. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Strasbourg Europa-Park. Prix dès 90€, trajet 50 min. Siège enfant gratuit, famille bienvenue. ☎ 07 44 22 09 60",
     highlights: [
       "Siège enfant fourni gratuitement",
       "Prix forfaitaire aller simple ou A/R",
@@ -104,7 +104,7 @@ export const trajets: Trajet[] = [
     duration: "50 min-1h",
     priceRange: { min: 110, max: 140 },
     description: "Transfert taxi Strasbourg-Colmar. Découvrez la capitale des vins d'Alsace en tout confort.",
-    metaDescription: "Taxi Strasbourg Colmar. Prix dès 110€, trajet 1h. Route des vins, tourisme. Réservation 24h/24. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Strasbourg Colmar. Prix dès 110€, trajet 1h. Route des vins, tourisme. Réservation 24h/24. ☎ 07 44 22 09 60",
     highlights: [
       "Trajet direct par autoroute",
       "Possibilité d'arrêts sur la route des vins",
@@ -124,7 +124,7 @@ export const trajets: Trajet[] = [
     duration: "4h30-5h",
     priceRange: { min: 550, max: 650 },
     description: "Transfert longue distance Strasbourg-Paris. Alternative confortable au train pour groupes ou horaires spéciaux.",
-    metaDescription: "Taxi Strasbourg Paris. Transfert longue distance, prix sur devis. Groupes, entreprises, horaires flexibles. ☎ 07 68 14 94 61",
+    metaDescription: "Taxi Strasbourg Paris. Transfert longue distance, prix sur devis. Groupes, entreprises, horaires flexibles. ☎ 07 44 22 09 60",
     highlights: [
       "Idéal pour les groupes (jusqu'à 4 pers.)",
       "Bagages illimités",
