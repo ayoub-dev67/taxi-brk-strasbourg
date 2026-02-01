@@ -53,19 +53,24 @@ export function AddressAutocomplete({
     if (autocompleteRef.current) {
       const place = autocompleteRef.current.getPlace();
 
-      if (place && place.formatted_address) {
-        const addressData: AddressData = {
-          adresse: place.formatted_address,
-          placeId: place.place_id,
-        };
+      if (place) {
+        // Utilise formatted_address ou name (pour aéroports, gares, etc.)
+        const displayAddress = place.formatted_address || place.name || "";
 
-        if (place.geometry?.location) {
-          addressData.lat = place.geometry.location.lat();
-          addressData.lng = place.geometry.location.lng();
+        if (displayAddress) {
+          const addressData: AddressData = {
+            adresse: displayAddress,
+            placeId: place.place_id,
+          };
+
+          if (place.geometry?.location) {
+            addressData.lat = place.geometry.location.lat();
+            addressData.lng = place.geometry.location.lng();
+          }
+
+          setInputValue(displayAddress);
+          onChange(addressData);
         }
-
-        setInputValue(place.formatted_address);
-        onChange(addressData);
       }
     }
   }, [onChange]);
@@ -205,18 +210,9 @@ export function AddressAutocomplete({
           onLoad={onLoad}
           onPlaceChanged={onPlaceChanged}
           options={{
-            // Pas de componentRestrictions pour autoriser tous les pays
-            // (France, Allemagne, Suisse, etc.)
-            types: ["address"],
-            fields: ["formatted_address", "geometry", "place_id"],
-            // Préférence pour la région Strasbourg/Alsace sans bloquer les autres
-            bounds: {
-              north: 49.5,  // Nord Alsace
-              south: 47.5,  // Sud Alsace
-              east: 9.0,    // Frontière allemande
-              west: 6.5,    // Ouest Lorraine
-            },
-            strictBounds: false, // IMPORTANT: permet les adresses hors zone
+            // AUCUNE restriction - affiche TOUS les lieux du monde entier :
+            // adresses, villes, pays, aéroports, gares, hôpitaux, hôtels, commerces, etc.
+            fields: ["formatted_address", "geometry", "place_id", "name"],
           }}
         >
           <input
