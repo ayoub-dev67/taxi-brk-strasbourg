@@ -200,9 +200,18 @@ export function AddressAutocomplete({
           onLoad={onLoad}
           onPlaceChanged={onPlaceChanged}
           options={{
-            componentRestrictions: { country: "fr" },
+            // Pas de componentRestrictions pour autoriser tous les pays
+            // (France, Allemagne, Suisse, etc.)
             types: ["address"],
             fields: ["formatted_address", "geometry", "place_id"],
+            // Préférence pour la région Strasbourg/Alsace sans bloquer les autres
+            bounds: {
+              north: 49.5,  // Nord Alsace
+              south: 47.5,  // Sud Alsace
+              east: 9.0,    // Frontière allemande
+              west: 6.5,    // Ouest Lorraine
+            },
+            strictBounds: false, // IMPORTANT: permet les adresses hors zone
           }}
         >
           <input
